@@ -1,0 +1,31 @@
+services:
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - ai-model
+
+  ai-model:
+    build: ./ai-model
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql://aiuser:aipass@database:5432/aidb
+    depends_on:
+      - database
+
+  database:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: aiuser
+      POSTGRES_PASSWORD: aipass
+      POSTGRES_DB: aidb
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
